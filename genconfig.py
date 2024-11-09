@@ -2,7 +2,7 @@ import os
 import json
 
 config = {
-    "foo": ["bar", "bang",]
+    "foo": ["bar", "bang",],
     "baz": True,
     "buck": {
         "meh": "bah",
