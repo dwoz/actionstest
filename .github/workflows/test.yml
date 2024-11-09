@@ -11,7 +11,12 @@ on:
 
 jobs:
   testit:
-    name: Test it
     runs-on: ubuntu-latest
-    run: echo ${{ fromJSON(inputs.config)['foo'] }}
-    
+    needs:
+     - config
+    steps:
+      - name: Test it a
+        run: echo ${{ fromJSON(inputs.config)['foo'] }}
+
+      - name: Test it 3
+        run: echo ${{ fromJson(inputs.config)['moo'] }}

@@ -7,7 +7,8 @@ config = {
     "buck": {
         "meh": "bah",
     },
+    "moo": "bahbah"
 }
 github_output = os.environ.get("GITHUB_OUTPUT")
 with open(github_output, "a", encoding="utf-8") as wfh:
-    wfh.write(f"jobs={json.dumps(config)}\n")
+    wfh.write(f"config={json.dumps(config)}\n")

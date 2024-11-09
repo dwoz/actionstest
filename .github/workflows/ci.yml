@@ -8,7 +8,7 @@ jobs:
     name: Get Config
     runs-on: ubuntu-latest
     outputs:
-      jobs: ${{ steps.getconfig.outputs.config }}
+      config: ${{ steps.getconfig.outputs.config }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,5 +22,12 @@ jobs:
     needs:
       - config
     with:
-      config: ${{ toJSON(needs.config.outputs.config) }}
-      
+      config: ${{ needs.config.outputs.config }}
+
+  getoutput:
+    runs-on: ubuntu-latest
+    needs:
+      - config
+    steps:
+      - run: echo ${{ fromJSON(needs.config.outputs.config)['moo'] }}
+      - run: echo ${{ fromJSON(needs.config.outputs.config)['foo'] }}
