@@ -1,18 +1,64 @@
 name: CI
 on:
   push: {}
+  workflow_dispatch:
+    inputs:
+       offer:
+         type: string
+         required: True
+       public_key:
+         type: string
+         required: True
+
+
+
 
 jobs:
 
-  config:
-    name: Get Config
-    runs-on: ubuntu-latest
-    outputs:
-      jobs: ${{ steps.getconfig.outputs.config }}
+#  testlinux:
+#
+#    runs-on: ubuntu-22.04
+#    environment: ci
+#    steps:
+#
+#      - name: Checkout Source Code
+#        uses: actions/checkout@v4
+#
+#      - uses: ./.github/actions/ssh-tunnel
+#        with:
+#          public_key: ${{ inputs.public_key }}
+#          offer: ${{ inputs.offer }}
+
+
+#  testmac:
+#
+#    runs-on: macos-13
+#    environment: ci
+#    steps:
+#
+#      - name: Checkout Source Code
+#        uses: actions/checkout@v4
+#
+#      - uses: ./.github/actions/ssh-tunnel
+#        if: ${{ inputs.offer }}
+#        with:
+#          public_key: ${{ inputs.public_key }}
+#          offer: ${{ inputs.offer }}
+
+
+  testwindows:
+
+    runs-on: windows-2019
+    environment: ci
     steps:
-      - uses: actions/checkout@v4
+
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - uses: ./.github/actions/ssh-tunnel
+        if: ${{ inputs.offer }}
         with:
-          fetch-depth: 0  # Full clone to also get the tags to get the right salt version
-      - name: Get Config
-        id: getconfig
-        run: python3 genconfig.py
+          public_key: ${{ inputs.public_key }}
+          offer: ${{ inputs.offer }}
+
+

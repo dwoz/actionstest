@@ -1,0 +1,115 @@
+# SSH Tunnel Action
+# =================
+#
+# This action will create a reverse ssh tunnel to a github runner.
+#
+#
+# Usage
+# -----
+#
+# Create a key for the server.
+#
+# ssh-keygen -f ./runner -N ''
+#
+# Copy the contents of the runner private key into a github secret which can ba accessed by your workflow.
+#
+# ```
+# steps:
+#   - name: SSH Tunnel
+#     uses: ./.github/actions/ssh-tunnel
+#     with:
+#       user: dan
+#       host: 95.212.213.150
+#       public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAVGQIPTuC5Hgj9h5LV5tda6nZdHCsFvqFjBvSAYjfEQ dan@carbon"
+#       private_key: "${{ secrets.PRIVATE_KEY }}"
+# ```
+---
+name: ssh-tunnel
+description: SSH Reverse Tunnel
+
+inputs:
+  public_key:
+    required: true
+    description: Public key to accept for reverse tunnel. Warning, this should not be the public key for the 'private_key' input.
+  offer:
+    required: true
+    description: RTC offer
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install ssh
+      if: ${{ runner.os == 'Windows' }}
+      shell: powershell
+      run: |
+          python3.exe -m pip install requests
+          python3.exe installssh.py
+
+    - name: Start SSH
+      if: ${{ runner.os == 'Windows' }}
+      shell: powershell
+      run: |
+        Start-Service sshd
+
+    - name: Show sshd configuration
+      shell: bash
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          cat /etc/ssh/sshd_config
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+          cat /private/etc/ssh/sshd_config
+        else
+          cat "C:\ProgramData\ssh\sshd_config"
+        fi
+
+    - name: Add ssh public key
+      shell: sh
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+           BASE_DIR=home
+        else
+           BASE_DIR=Users
+        fi
+        mkdir -p /$BASE_DIR/runner/.ssh
+        chmod 700 /$BASE_DIR/runner/.ssh
+        touch /$BASE_DIR/runner/.ssh/authorized_keys
+        echo "${{ inputs.public_key }}" | tee -a /$BASE_DIR/runner/.ssh/authorized_keys
+
+    - name: netstat
+      shell: bash
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          netstat -ntlp
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+          netstat -ntl
+        else
+          netstat -a
+        fi
+    - name: Stop SSH
+      if: ${{ runner.os == 'Windows' }}
+      shell: powershell
+      run: |
+        Start-Service sshd
+
+    - name: Install aiortc
+      shell: bash
+      run: |
+        "C:\Windows\System32\OpenSSH\sshd.exe" -d
+        python3 -m pip install aiortc
+
+    - name: Create rtc tunnel
+      shell: 'bash'
+      run: |
+        echo '${{ inputs.offer }}' | python -m rtcforward --port 22 answer
+
+  #  - name: Create rtc tunnel (Windows)
+  #    if: ${{ runner.os == 'Windows' }}
+  #    shell: powershell
+  #    run: |
+  #      echo '${{ inputs.offer }}' | python -m rtcforward --port 22 answer
