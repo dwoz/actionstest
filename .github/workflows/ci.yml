@@ -16,3 +16,11 @@ jobs:
       - name: Get Config
         id: getconfig
         run: python3 genconfig.py
+
+  test:
+    uses: ./.github/workflows/test.yml
+    needs:
+      - config
+    with:
+      config: ${{ toJSON(needs.config.outputs.config) }}
+      

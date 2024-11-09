@@ -1,0 +1,17 @@
+---
+name: Test
+
+on:
+  workflow_call:
+    inputs:
+      config:
+        type: string
+        required: true
+        description: Configuration
+
+jobs:
+  testit:
+    name: Test it
+    runs-on: ubuntu-latest
+    run: echo ${{ fromJSON(inputs.config)['foo'] }}
+    
