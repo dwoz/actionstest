@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import base64
 import concurrent
 import io
 import logging
@@ -18,7 +19,7 @@ log = logging.getLogger(__name__)
 
 def print_pastable(data, message="offer"):
     sys.stdout.write(f"-- {message}--" + "\n\n")
-    sys.stdout.write(f"{data}" + "\n\n")
+    sys.stdout.write(f"{data.decode()}" + "\n\n")
     sys.stdout.write(f"-- end {message} --" + "\n\n")
     sys.stdout.flush()
 
@@ -173,7 +174,8 @@ class ProxyConnection:
 
 async def read_from_stdin():
     loop = asyncio.get_event_loop()
-    if sys.platform == "win32" or True:
+    if sys.platform == "win32":
+        print("-- Please enter a message from remote party --")
         input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
         _ = ""
         while True:
@@ -214,14 +216,15 @@ async def run_answer(pc, args):
 
     data = await read_from_stdin()
     log.error("Data from stdin %r", data)
-    obj = object_from_string(data)
+    obj = object_from_string(base64.b64decode(data))
     if isinstance(obj, RTCSessionDescription):
         log.debug("received rtc session description")
         await pc.setRemoteDescription(obj)
         if obj.type == "offer":
             # send answer
             await pc.setLocalDescription(await pc.createAnswer())
-            print_pastable(object_to_string(pc.localDescription), "reply")
+            data = base64.b64encode(object_to_string(pc.localDescription).encode('utf-8'))
+            print_pastable(data, "reply")
     elif isinstance(obj, RTCIceCandidate):
         log.debug("received rtc ice candidate")
         await pc.addIceCandidate(obj)
@@ -261,7 +264,7 @@ async def run_offer(pc, args):
 
     # send offer
     await pc.setLocalDescription(await pc.createOffer())
-    print_pastable(object_to_string(pc.localDescription), "offer")
+    print_pastable(base64.b64encode(object_to_string(pc.localDescription).encode('utf-8')), "offer")
     print("-- Please enter a message from remote party --")
     loop = asyncio.get_event_loop()
     reader = asyncio.StreamReader(loop=loop)
@@ -270,7 +273,7 @@ async def run_offer(pc, args):
     )
 
     data = await reader.readline()
-    obj = object_from_string(data.decode(sys.stdin.encoding))
+    obj = object_from_string(base64.b64decode(data.decode(sys.stdin.encoding)))
     if isinstance(obj, RTCSessionDescription):
         log.debug("received rtc session description")
         await pc.setRemoteDescription(obj)
@@ -313,7 +316,8 @@ if __name__ == "__main__":
         coro = run_answer(pc, args)
 
     # run event loop
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     try:
         loop.run_until_complete(coro)
     except KeyboardInterrupt:
