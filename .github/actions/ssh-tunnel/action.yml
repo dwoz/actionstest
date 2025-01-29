@@ -91,16 +91,17 @@ runs:
         else
           netstat -a
         fi
+
     - name: Stop SSH
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
       run: |
-        Start-Service sshd
+        Stop-Service sshd
 
     - name: Install aiortc
       shell: bash
       run: |
-        "C:\Windows\System32\OpenSSH\sshd.exe" -d
+        sshd.exe -d
         python3 -m pip install aiortc
 
     - name: Create rtc tunnel
