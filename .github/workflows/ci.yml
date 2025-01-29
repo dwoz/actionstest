@@ -55,6 +55,10 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
+      - name: user name
+        shell: powershell
+        run: echo $Env:UserName
+
       - uses: ./.github/actions/ssh-tunnel
         if: ${{ inputs.offer }}
         with:
