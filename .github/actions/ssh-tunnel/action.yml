@@ -85,7 +85,7 @@ runs:
         else
           mkdir -p "C:\Users\runner\.ssh"
           chmod 700 "C:\Users\runner\.ssh"
-          echo "${{ inputs.public_key }}" | tee -a "C\Users\runner\.ssh\authorized_keys"
+          echo "${{ inputs.public_key }}" | tee -a "C:\Users\runner\.ssh\authorized_keys"
         fi
 
     - name: netstat
