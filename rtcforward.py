@@ -175,7 +175,15 @@ async def read_from_stdin():
     loop = asyncio.get_event_loop()
     if sys.platform == "win32" or True:
         input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
-        return input_stream.readline()
+        _ = ""
+        while True:
+            _ += input_stream.readline()
+            try:
+                json.loads(_)
+            except:
+                pass
+            else:
+                return _
         #_ = ""
         #while True:
         #    _ +=  input("-- Please enter a message from remote party --")
@@ -205,7 +213,7 @@ async def run_answer(pc, args):
         client.start()
 
     data = await read_from_stdin()
-    log.error("WTF %r", data)
+    log.error("Data from stdin %r", data)
     obj = object_from_string(data)
     if isinstance(obj, RTCSessionDescription):
         log.debug("received rtc session description")
