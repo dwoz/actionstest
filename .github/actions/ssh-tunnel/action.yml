@@ -83,8 +83,8 @@ runs:
           touch /Users/runner/.ssh/authorized_keys
           echo "${{ inputs.public_key }}" | tee -a /Users/runner/.ssh/authorized_keys
         else
-          mkdir -p "C:\Users\runner\.ssh"
-          chmod 700 "C:\Users\runner\.ssh"
+          mkdir -p "C:\Users\actions-runner\.ssh"
+          chmod 700 "C:\Users\actions-runner\.ssh"
           echo "${{ inputs.public_key }}" | tee -a "C:\Users\runner\.ssh\authorized_keys"
         fi
 
