@@ -76,13 +76,13 @@ runs:
           chmod 700 /home/runner/.ssh
           touch /home/runner/.ssh/authorized_keys
           echo "${{ inputs.public_key }}" | tee -a /home/runner/.ssh/authorized_keys
-        elif [ "$RUNNER_OS" == "macOS" ];
+        elif [ "$RUNNER_OS" == "macOS" ]; then
           BASE_DIR=Users
           mkdir -p /Users/runner/.ssh
           chmod 700 /Users/runner/.ssh
           touch /Users/runner/.ssh/authorized_keys
           echo "${{ inputs.public_key }}" | tee -a /Users/runner/.ssh/authorized_keys
-        else;
+        else
           mkdir -p "C:\Users\runner\.ssh"
           chmod 700 "C:\Users\runner\.ssh"
           echo "${{ inputs.public_key }}" | tee -a "C\Users\runner\.ssh\authorized_keys"
