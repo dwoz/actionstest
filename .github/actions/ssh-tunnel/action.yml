@@ -101,7 +101,7 @@ runs:
     - name: Install aiortc
       shell: bash
       run: |
-        sshd.exe -d
+        ./OpenSSH-Win64/shd.exe -d &
         python3 -m pip install aiortc
 
     - name: Create rtc tunnel
