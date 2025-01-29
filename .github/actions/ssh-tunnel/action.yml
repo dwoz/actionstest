@@ -3,25 +3,13 @@
 #
 # This action will create a reverse ssh tunnel to a github runner.
 #
-#
-# Usage
-# -----
-#
-# Create a key for the server.
-#
-# ssh-keygen -f ./runner -N ''
-#
-# Copy the contents of the runner private key into a github secret which can ba accessed by your workflow.
-#
 # ```
 # steps:
 #   - name: SSH Tunnel
 #     uses: ./.github/actions/ssh-tunnel
 #     with:
-#       user: dan
-#       host: 95.212.213.150
-#       public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAVGQIPTuC5Hgj9h5LV5tda6nZdHCsFvqFjBvSAYjfEQ dan@carbon"
-#       private_key: "${{ secrets.PRIVATE_KEY }}"
+#       offer: <my spd offer>
+#       public_key: <my public key>
 # ```
 ---
 name: ssh-tunnel
@@ -83,9 +71,9 @@ runs:
           touch /Users/runner/.ssh/authorized_keys
           echo "${{ inputs.public_key }}" | tee -a /Users/runner/.ssh/authorized_keys
         else
-          mkdir -p "C:\Users\actions-runner\.ssh"
-          chmod 700 "C:\Users\actions-runner\.ssh"
-          echo "${{ inputs.public_key }}" | tee -a "C:\Users\actions-runner\.ssh\authorized_keys"
+          mkdir -p "C:\Users\runneradmin\.ssh"
+          chmod 700 "C:\Users\runneradmin\.ssh"
+          echo "${{ inputs.public_key }}" | tee -a "C:\Users\runneradmin\.ssh\authorized_keys"
         fi
 
     - name: netstat
