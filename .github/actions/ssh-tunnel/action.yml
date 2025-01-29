@@ -72,14 +72,21 @@ runs:
       shell: sh
       run: |
         if [ "$RUNNER_OS" == "Linux" ]; then
-           BASE_DIR=home
-        else
-           BASE_DIR=Users
+          mkdir -p /home/runner/.ssh
+          chmod 700 /home/runner/.ssh
+          touch /home/runner/.ssh/authorized_keys
+          echo "${{ inputs.public_key }}" | tee -a /home/runner/.ssh/authorized_keys
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+          BASE_DIR=Users
+          mkdir -p /Users/runner/.ssh
+          chmod 700 /Users/runner/.ssh
+          touch /Users/runner/.ssh/authorized_keys
+          echo "${{ inputs.public_key }}" | tee -a /Users/runner/.ssh/authorized_keys
+        else;
+          mkdir -p "C:\Users\runner\.ssh"
+          chmod 700 "C:\Users\runner\.ssh"
+          echo "${{ inputs.public_key }}" | tee -a "C\Users\runner\.ssh\authorized_keys"
         fi
-        mkdir -p /$BASE_DIR/runner/.ssh
-        chmod 700 /$BASE_DIR/runner/.ssh
-        touch /$BASE_DIR/runner/.ssh/authorized_keys
-        echo "${{ inputs.public_key }}" | tee -a /$BASE_DIR/runner/.ssh/authorized_keys
 
     - name: netstat
       shell: bash
