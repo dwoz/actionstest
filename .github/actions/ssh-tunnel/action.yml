@@ -93,14 +93,17 @@ runs:
     #  run: |
     #    Stop-Service sshd
 
-    - name: Create rtc tunnel
-      shell: bash
-      run: |
-        python3 -m pip install aiortc
-        echo '${{ inputs.offer }}' | python -m rtcforward -v --port 22 answer
+    #- name: Create rtc tunnel
+    #  shell: bash
+    #  run: |
+    #    python3 -m pip install aiortc
+    #    echo '${{ inputs.offer }}' | python -m rtcforward -v --port 22 answer
 
-  #  - name: Create rtc tunnel (Windows)
-  #    if: ${{ runner.os == 'Windows' }}
-  #    shell: powershell
-  #    run: |
-  #      echo '${{ inputs.offer }}' | python -m rtcforward --port 22 answer
+    - name: Create rtc tunnel (Windows)
+      if: ${{ runner.os == 'Windows' }}
+      shell: powershell
+      run: |
+        $process = Start-Process 'python.exe -m rtcforward -v answer --port=22' -RedirectStandardInput -NoNewWindow
+        $process.StandardInput.WriteLine("${{ inputs.offer }}")
+        $process.StandardInput.Close()
+        $process.WaitForExit()
