@@ -111,4 +111,7 @@ runs:
         $psi.RedirectStandardInput = $true;
         $p = [System.Diagnostics.Process]::Start($psi);
         Start-Sleep -s 2
-        $p.StandardInput.WriteLine("dir");
+        $p.StandardInput.WriteLine("${{ inputs.offer }}");
+        $p.StandardInput.Close();
+        $p.WaitForExit()
+
