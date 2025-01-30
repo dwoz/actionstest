@@ -105,7 +105,7 @@ runs:
       run: |
         $psi = New-Object System.Diagnostics.ProcessStartInfo;
         $psi.FileName = "python.exe";
-        $psi.ArgumentList = "-m", "rtcforward", "-v", "answer", "--port=22";
+        $psi.Arguments = "-m rtcforward -v answer --port=22";
         $psi.UseShellExecute = $false;
         $psi.RedirectStandardInput = $true;
         $p = [System.Diagnostics.Process]::Start($psi);
