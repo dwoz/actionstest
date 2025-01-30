@@ -103,7 +103,11 @@ runs:
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
       run: |
-        $process = Start-Process "python.exe" -ArgumentList "-m", "rtcforward", "-v", "answer", "--port=22" -RedirectStandardInput -PassThru
-        $process.StandardInput.WriteLine("${{ inputs.offer }}")
-        $process.StandardInput.Close()
-        $process.WaitForExit()
+        $psi = New-Object System.Diagnostics.ProcessStartInfo;
+        $psi.FileName = "python.exe";
+        $psi.ArgumentList = "-m", "rtcforward", "-v", "answer", "--port=22";
+        $psi.UseShellExecute = $false;
+        $psi.RedirectStandardInput = $true;
+        $p = [System.Diagnostics.Process]::Start($psi);
+        Start-Sleep -s 2
+        $p.StandardInput.WriteLine("dir");
