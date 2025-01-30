@@ -103,7 +103,7 @@ runs:
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
       run: |
-        $process = Start-Process 'python.exe -m rtcforward -v answer --port=22' -RedirectStandardInput -NoNewWindow
+        $process = Start-Process "python.exe" -ArgumentList "-m", "rtcforward", "-v", "answer", "--port=22" -RedirectStandardInput -PassThru
         $process.StandardInput.WriteLine("${{ inputs.offer }}")
         $process.StandardInput.Close()
         $process.WaitForExit()
