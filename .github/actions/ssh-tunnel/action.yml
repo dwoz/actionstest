@@ -97,7 +97,7 @@ runs:
       shell: bash
       run: |
         python3 -m pip install aiortc
-        echo '${{ inputs.offer }}' | python -m rtcforward --port 22 answer
+        echo '${{ inputs.offer }}' | python -m rtcforward -v --port 22 answer
 
   #  - name: Create rtc tunnel (Windows)
   #    if: ${{ runner.os == 'Windows' }}
