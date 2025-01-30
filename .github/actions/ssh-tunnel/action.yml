@@ -103,6 +103,7 @@ runs:
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
       run: |
+        python3 -m pip install aiortc
         $psi = New-Object System.Diagnostics.ProcessStartInfo;
         $psi.FileName = "python.exe";
         $psi.Arguments = "-m rtcforward -v answer --port=22";
