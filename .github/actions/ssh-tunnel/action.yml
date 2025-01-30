@@ -96,6 +96,7 @@ runs:
     - name: Create rtc tunnel
       shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
       run: |
+        python3 -m pip install aiortc
         echo '${{ inputs.offer }}' | python -m rtcforward --port 22 answer
 
   #  - name: Create rtc tunnel (Windows)
