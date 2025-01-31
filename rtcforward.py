@@ -11,9 +11,39 @@ import sys
 
 import aiortc.exceptions
 from aiortc import RTCIceCandidate, RTCPeerConnection, RTCSessionDescription
-from aiortc.contrib.signaling import BYE, add_signaling_arguments, create_signaling, object_to_string, object_from_string
+from aiortc.contrib.signaling import BYE, add_signaling_arguments, create_signaling
 
 log = logging.getLogger(__name__)
+
+
+def object_from_string(message_str):
+    message = json.loads(message_str)
+    if message["type"] in ["answer", "offer"]:
+        message['sdp'] = message['sdp'].join('\r\n')
+        return RTCSessionDescription(**message)
+    elif message["type"] == "candidate" and message["candidate"]:
+        candidate = candidate_from_sdp(message["candidate"].split(":", 1)[1])
+        candidate.sdpMid = message["id"]
+        candidate.sdpMLineIndex = message["label"]
+        return candidate
+    elif message["type"] == "bye":
+        return BYE
+
+
+def object_to_string(obj):
+    if isinstance(obj, RTCSessionDescription):
+        message = {"sdp": obj.sdp.split('\r\n'), "type": obj.type}
+    elif isinstance(obj, RTCIceCandidate):
+        message = {
+            "candidate": "candidate:" + candidate_to_sdp(obj),
+            "id": obj.sdpMid,
+            "label": obj.sdpMLineIndex,
+            "type": "candidate",
+        }
+    else:
+        assert obj is BYE
+        message = {"type": "bye"}
+    return json.dumps(message, sort_keys=True)
 
 
 
