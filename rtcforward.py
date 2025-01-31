@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 
 def print_pastable(data, message="offer"):
     sys.stdout.write(f"-- {message}--" + "\n\n")
-    sys.stdout.write(f"{data.decode()}" + "\n\n")
+    sys.stdout.write(f"{data}" + "\n\n")
     sys.stdout.write(f"-- end {message} --" + "\n\n")
     sys.stdout.flush()
 
@@ -199,18 +199,18 @@ async def run_answer(pc, args):
         client.start()
 
     data = await read_from_stdin()
-    sdata = base64.b64decode(data)
-    log.error("Data from stdin %r", sdata)
-    obj = object_from_string(sdata)
+    #data = base64.b64decode(data)
+    log.error("Data from stdin %r", data)
+    obj = object_from_string(data)
     if isinstance(obj, RTCSessionDescription):
         log.debug("received rtc session description")
         await pc.setRemoteDescription(obj)
         if obj.type == "offer":
             # send answer
             await pc.setLocalDescription(await pc.createAnswer())
-            sdata = object_to_string(pc.localDescription)
-            log.error("String reply %r", sdata)
-            data = base64.b64encode(sdata.encode())
+            data = object_to_string(pc.localDescription)
+            #data = base64.b64encode(data.encode())
+            log.error("String reply %r", data)
             print_pastable(data, "reply")
     elif isinstance(obj, RTCIceCandidate):
         log.debug("received rtc ice candidate")
@@ -251,7 +251,9 @@ async def run_offer(pc, args):
 
     # send offer
     await pc.setLocalDescription(await pc.createOffer())
-    print_pastable(base64.b64encode(object_to_string(pc.localDescription).encode()), "offer")
+    data = object_to_string(pc.localDescription)
+    #data = base64.b64encode(data.encode())
+    print_pastable(data, "offer")
     print("-- Please enter a message from remote party --")
     loop = asyncio.get_event_loop()
     reader = asyncio.StreamReader(loop=loop)
@@ -260,7 +262,8 @@ async def run_offer(pc, args):
     )
 
     data = await reader.readline()
-    obj = object_from_string(base64.b64decode(data.decode(sys.stdin.encoding)))
+    #data = base64.b64decode(data.decode())
+    obj = object_from_string(data)
     if isinstance(obj, RTCSessionDescription):
         log.debug("received rtc session description")
         await pc.setRemoteDescription(obj)
