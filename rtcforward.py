@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 
 def object_from_string(message_str):
     message = json.loads(message_str)
-    message["sdp"] = "\r\n".join(message["sdp"])
+    #message["sdp"] = "\r\n".join(message["sdp"])
     if message["type"] in ["answer", "offer"]:
         return RTCSessionDescription(**message)
     elif message["type"] == "candidate" and message["candidate"]:
@@ -34,7 +34,8 @@ def object_from_string(message_str):
 
 def object_to_string(obj):
     if isinstance(obj, RTCSessionDescription):
-        message = {"sdp": obj.sdp.split('\r\n'), "type": obj.type}
+        #message = {"sdp": obj.sdp.split('\r\n'), "type": obj.type}
+        message = {"sdp": obj.sdp, "type": obj.type}
     elif isinstance(obj, RTCIceCandidate):
         message = {
             "candidate": "candidate:" + candidate_to_sdp(obj),
