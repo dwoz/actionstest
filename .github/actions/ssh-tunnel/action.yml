@@ -95,7 +95,7 @@ runs:
     #    Stop-Service sshd
 
     - name: Create rtc tunnel
-      shell: pwsh
+      shell: bash
       run: |
         python3 -m pip install aiortc
         echo '${{ inputs.offer }}' | python -m rtcforward --port 22 answer
