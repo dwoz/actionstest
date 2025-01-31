@@ -174,34 +174,18 @@ class ProxyConnection:
 
 async def read_from_stdin():
     loop = asyncio.get_event_loop()
-    if sys.platform == "win32":
-        print("-- Please enter a message from remote party --")
-        input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
-        _ = ""
-        while True:
-            _ += input_stream.readline()
-            try:
-                json.loads(_)
-            except:
-                pass
-            else:
-                return _
-        #_ = ""
-        #while True:
-        #    _ +=  input("-- Please enter a message from remote party --")
-        #    try:
-        #        json.loads(_)
-        #    except:
-        #        pass
-        #    else:
-        #        return _
-    else:
-        print("-- Please enter a message from remote party --")
-        reader = asyncio.StreamReader(loop=loop)
-        transport, _ = await loop.connect_read_pipe(
-            lambda: asyncio.StreamReaderProtocol(reader), sys.stdin
-        )
-        return (await reader.readline()).decode(sys.stdin.encoding)
+    return await loop.run_in_executor(
+        None, input, "-- Please enter a message from remote party --")
+    #if sys.platform == "win32":
+    #    print("-- Please enter a message from remote party --")
+    #    input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
+    #else:
+    #    print("-- Please enter a message from remote party --")
+    #    reader = asyncio.StreamReader(loop=loop)
+    #    transport, _ = await loop.connect_read_pipe(
+    #        lambda: asyncio.StreamReaderProtocol(reader), sys.stdin
+    #    )
+    #    return (await reader.readline()).decode(sys.stdin.encoding)
 
 async def run_answer(pc, args):
     """
