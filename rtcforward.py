@@ -18,9 +18,11 @@ log = logging.getLogger(__name__)
 
 
 def print_pastable(data, message="offer"):
-    print(f"\n-- {message} --" + "\n\n")
-    print(f"{data}" + "\n\n")
-    print(f"-- end {message} --" + "\n\n")
+    print(f"-- {message} --")
+    sys.stdout.flush()
+    print(f"{data}")
+    sys.stdout.flush()
+    print(f"-- end {message} --")
     sys.stdout.flush()
 
 
@@ -200,7 +202,7 @@ async def run_answer(pc, args):
 
     data = await read_from_stdin()
     #data = base64.b64decode(data)
-    log.error("Data from stdin %r", data)
+    #log.error("Data from stdin %r", data)
     obj = object_from_string(data)
     if isinstance(obj, RTCSessionDescription):
         log.debug("received rtc session description")
@@ -210,7 +212,7 @@ async def run_answer(pc, args):
             await pc.setLocalDescription(await pc.createAnswer())
             data = object_to_string(pc.localDescription)
             #data = base64.b64encode(data.encode())
-            log.error("String reply %r", data)
+            #log.error("String reply %r", data)
             print_pastable(data, "reply")
     elif isinstance(obj, RTCIceCandidate):
         log.debug("received rtc ice candidate")
