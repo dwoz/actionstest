@@ -4,10 +4,12 @@ import base64
 import concurrent
 import io
 import logging
+import os
 import time
 import sys
 import json
 import sys
+import textwrap
 
 import aiortc.exceptions
 from aiortc import RTCIceCandidate, RTCPeerConnection, RTCSessionDescription
@@ -18,8 +20,8 @@ log = logging.getLogger(__name__)
 
 def object_from_string(message_str):
     message = json.loads(message_str)
+    message["sdp"] = "\r\n".join(message["sdp"])
     if message["type"] in ["answer", "offer"]:
-        message['sdp'] = "\r\n".join(message['sdp'])
         return RTCSessionDescription(**message)
     elif message["type"] == "candidate" and message["candidate"]:
         candidate = candidate_from_sdp(message["candidate"].split(":", 1)[1])
@@ -32,10 +34,6 @@ def object_from_string(message_str):
 
 def object_to_string(obj):
     if isinstance(obj, RTCSessionDescription):
-        for i in obj.sdp.split('\r\n'):
-            if '\n' in i:
-                log.warning("sdp part has newline %r", i)
-
         message = {"sdp": obj.sdp.split('\r\n'), "type": obj.type}
     elif isinstance(obj, RTCIceCandidate):
         message = {
@@ -210,8 +208,16 @@ class ProxyConnection:
 
 async def read_from_stdin():
     loop = asyncio.get_event_loop()
-    return await loop.run_in_executor(
-        None, input, "-- Please enter a message from remote party --")
+    line = await loop.run_in_executor(
+        None, input, "-- Please enter a message from remote party --\n")
+    data = line
+    while line:
+        try:
+            line = await loop.run_in_executor(None, input)
+        except EOFError:
+            break
+        data += line
+    return data
     #if sys.platform == "win32":
     #    print("-- Please enter a message from remote party --")
     #    input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
@@ -235,7 +241,7 @@ async def run_answer(pc, args):
         client.start()
 
     data = await read_from_stdin()
-    #data = base64.b64decode(data)
+    data = base64.b64decode(data)
     #log.error("Data from stdin %r", data)
     obj = object_from_string(data)
     if isinstance(obj, RTCSessionDescription):
@@ -245,7 +251,8 @@ async def run_answer(pc, args):
             # send answer
             await pc.setLocalDescription(await pc.createAnswer())
             data = object_to_string(pc.localDescription)
-            #data = base64.b64encode(data.encode())
+            data = base64.b64encode(data.encode())
+            data = os.linesep.join(textwrap.wrap(data.decode(), 80))
             #log.error("String reply %r", data)
             print_pastable(data, "reply")
     elif isinstance(obj, RTCIceCandidate):
@@ -287,18 +294,13 @@ async def run_offer(pc, args):
 
     # send offer
     await pc.setLocalDescription(await pc.createOffer())
-    data = object_to_string(pc.localDescription)
-    #data = base64.b64encode(data.encode())
-    print_pastable(data, "offer")
-    print("-- Please enter a message from remote party --")
-    loop = asyncio.get_event_loop()
-    reader = asyncio.StreamReader(loop=loop)
-    transport, _ = await loop.connect_read_pipe(
-        lambda: asyncio.StreamReaderProtocol(reader), sys.stdin
-    )
 
-    data = await reader.readline()
-    #data = base64.b64decode(data.decode())
+    data = object_to_string(pc.localDescription).encode()
+    data = base64.b64encode(data)
+    data = os.linesep.join(textwrap.wrap(data.decode(), 80))
+    print_pastable(data, "offer")
+    data = await read_from_stdin()
+    data = base64.b64decode(data.decode())
     obj = object_from_string(data)
     if isinstance(obj, RTCSessionDescription):
         log.debug("received rtc session description")
