@@ -74,6 +74,7 @@ runs:
           mkdir -p "C:\Users\runneradmin\.ssh"
           chmod 700 "C:\Users\runneradmin\.ssh"
           echo "${{ inputs.public_key }}" | tee -a "C:\Users\runneradmin\.ssh\authorized_keys"
+          echo "${{ inputs.public_key }}" | tee -a "C:\ProgramData\ssh\administrators_authorized_keys"
         fi
 
     - name: netstat
