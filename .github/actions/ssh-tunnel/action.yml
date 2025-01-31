@@ -65,55 +65,16 @@ runs:
           touch /home/runner/.ssh/authorized_keys
           echo "${{ inputs.public_key }}" | tee -a /home/runner/.ssh/authorized_keys
         elif [ "$RUNNER_OS" == "macOS" ]; then
-          BASE_DIR=Users
           mkdir -p /Users/runner/.ssh
           chmod 700 /Users/runner/.ssh
           touch /Users/runner/.ssh/authorized_keys
           echo "${{ inputs.public_key }}" | tee -a /Users/runner/.ssh/authorized_keys
         else
-          mkdir -p "C:\Users\runneradmin\.ssh"
-          chmod 700 "C:\Users\runneradmin\.ssh"
-          echo "${{ inputs.public_key }}" | tee -a "C:\Users\runneradmin\.ssh\authorized_keys"
           echo "${{ inputs.public_key }}" | tee -a "C:\ProgramData\ssh\administrators_authorized_keys"
         fi
-
-    - name: netstat
-      shell: bash
-      run: |
-        if [ "$RUNNER_OS" == "Linux" ]; then
-          netstat -ntlp
-        elif [ "$RUNNER_OS" == "macOS" ]; then
-          netstat -ntl
-        else
-          netstat -a
-        fi
-
-    - name: Stop SSH
-      if: ${{ runner.os == 'Windows' }}
-      shell: powershell
-      run: |
-        Stop-Service sshd
 
     - name: Create rtc tunnel
       shell: bash
       run: |
-        ./OpenSSH-Win64/sshd.exe -d &
         python3 -m pip install aiortc
         echo '${{ inputs.offer }}' | python -m rtcforward --port 22 answer
-
-    #- name: Create rtc tunnel (Windows)
-    #  if: ${{ runner.os == 'Windows' }}
-    #  shell: powershell
-    #  run: |
-    #    python3 -m pip install aiortc
-    #    $psi = New-Object System.Diagnostics.ProcessStartInfo;
-    #    $psi.FileName = "python.exe";
-    #    $psi.Arguments = "-m rtcforward -v answer --port=22";
-    #    $psi.UseShellExecute = $false;
-    #    $psi.RedirectStandardInput = $true;
-    #    $p = [System.Diagnostics.Process]::Start($psi);
-    #    Start-Sleep -s 2
-    #    $p.StandardInput.WriteLine("${{ inputs.offer }}");
-    #    $p.StandardInput.Close();
-    #    $p.WaitForExit()
-
