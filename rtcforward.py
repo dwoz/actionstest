@@ -32,6 +32,10 @@ def object_from_string(message_str):
 
 def object_to_string(obj):
     if isinstance(obj, RTCSessionDescription):
+        for i in obj.sdp.split('\r\n'):
+            if '\n' in i:
+                log.warning("sdp part has newline %r", i)
+
         message = {"sdp": obj.sdp.split('\r\n'), "type": obj.type}
     elif isinstance(obj, RTCIceCandidate):
         message = {
