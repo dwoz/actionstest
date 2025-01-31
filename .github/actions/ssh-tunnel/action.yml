@@ -87,16 +87,17 @@ runs:
           netstat -a
         fi
 
-    #- name: Stop SSH
-    #  if: ${{ runner.os == 'Windows' }}
-    #  shell: powershell
-    #  shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
-    #  run: |
-    #    Stop-Service sshd
+    - name: Stop SSH
+      if: ${{ runner.os == 'Windows' }}
+      shell: powershell
+      shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
+      run: |
+        Stop-Service sshd
 
     - name: Create rtc tunnel
       shell: bash
       run: |
+        "sshd.exe" -d &
         python3 -m pip install aiortc
         echo '${{ inputs.offer }}' | python -m rtcforward --port 22 answer
 
