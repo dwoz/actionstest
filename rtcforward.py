@@ -18,9 +18,9 @@ log = logging.getLogger(__name__)
 
 
 def print_pastable(data, message="offer"):
-    sys.stdout.write(f"-- {message}--" + "\n\n")
-    sys.stdout.write(f"{data}" + "\n\n")
-    sys.stdout.write(f"-- end {message} --" + "\n\n")
+    print(f"\n-- {message} --" + "\n\n")
+    print(f"{data}" + "\n\n")
+    print(f"-- end {message} --" + "\n\n")
     sys.stdout.flush()
 
 
