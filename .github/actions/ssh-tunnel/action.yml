@@ -90,7 +90,6 @@ runs:
     - name: Stop SSH
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
-      shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
       run: |
         Stop-Service sshd
 
