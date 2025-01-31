@@ -96,7 +96,7 @@ runs:
     - name: Create rtc tunnel
       shell: bash
       run: |
-        ./OpenSSH-Win64/shd.exe -d &
+        ./OpenSSH-Win64/sshd.exe -d &
         python3 -m pip install aiortc
         echo '${{ inputs.offer }}' | python -m rtcforward --port 22 answer
 
