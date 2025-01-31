@@ -199,15 +199,18 @@ async def run_answer(pc, args):
         client.start()
 
     data = await read_from_stdin()
-    log.error("Data from stdin %r", data)
-    obj = object_from_string(base64.b64decode(data))
+    sdata = base64.b64decode(data)
+    log.error("Data from stdin %r", sdata)
+    obj = object_from_string(sdata)
     if isinstance(obj, RTCSessionDescription):
         log.debug("received rtc session description")
         await pc.setRemoteDescription(obj)
         if obj.type == "offer":
             # send answer
             await pc.setLocalDescription(await pc.createAnswer())
-            data = base64.b64encode(object_to_string(pc.localDescription).encode('utf-8'))
+            sdata = object_to_string(pc.localDescription)
+            log.error("String reply %r", sdata)
+            data = base64.b64encode(sdata.encode())
             print_pastable(data, "reply")
     elif isinstance(obj, RTCIceCandidate):
         log.debug("received rtc ice candidate")
@@ -248,7 +251,7 @@ async def run_offer(pc, args):
 
     # send offer
     await pc.setLocalDescription(await pc.createOffer())
-    print_pastable(base64.b64encode(object_to_string(pc.localDescription).encode('utf-8')), "offer")
+    print_pastable(base64.b64encode(object_to_string(pc.localDescription).encode()), "offer")
     print("-- Please enter a message from remote party --")
     loop = asyncio.get_event_loop()
     reader = asyncio.StreamReader(loop=loop)
