@@ -300,7 +300,7 @@ async def run_offer(pc, args):
     data = os.linesep.join(textwrap.wrap(data.decode(), 80))
     print_pastable(data, "offer")
     data = await read_from_stdin()
-    data = base64.b64decode(data.decode())
+    data = base64.b64decode(data.encode())
     obj = object_from_string(data)
     if isinstance(obj, RTCSessionDescription):
         log.debug("received rtc session description")
