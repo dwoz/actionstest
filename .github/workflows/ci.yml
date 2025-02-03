@@ -15,54 +15,29 @@ on:
 
 jobs:
 
-#  testlinux:
-#
-#    runs-on: ubuntu-22.04
-#    environment: ci
-#    steps:
-#
-#      - name: Checkout Source Code
-#        uses: actions/checkout@v4
-#
-#      - uses: ./.github/actions/ssh-tunnel
-#        with:
-#          public_key: ${{ inputs.public_key }}
-#          offer: ${{ inputs.offer }}
+  testlinux:
 
-
-#  testmac:
-#
-#    runs-on: macos-13
-#    environment: ci
-#    steps:
-#
-#      - name: Checkout Source Code
-#        uses: actions/checkout@v4
-#
-#      - uses: ./.github/actions/ssh-tunnel
-#        if: ${{ inputs.offer }}
-#        with:
-#          public_key: ${{ inputs.public_key }}
-#          offer: ${{ inputs.offer }}
-
-
-  testwindows:
-
-    runs-on: windows-2019
+    runs-on: ubuntu-22.04
     environment: ci
     steps:
 
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: user name
-        shell: powershell
-        run: echo $Env:UserName
+      - name: Random Failure
+        shell: bash
+        run: |
+          cat <<"EOF" > cmd.py
+          import sys
+          import random
 
-      - uses: ./.github/actions/ssh-tunnel
-        if: ${{ inputs.offer }}
-        with:
-          public_key: ${{ inputs.public_key }}
-          offer: ${{ inputs.offer }}
+          random.seed()
+          if random.randint(0, 1):
+              sys.exit(0)
+          else:
+              sys.exit(1)
+          EOF
+          python3 cmd.py
+
 
 
