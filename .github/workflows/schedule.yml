@@ -12,8 +12,6 @@ jobs:
   trigger-branch-nightly-builds:
     name: Trigger Branch Workflows
     runs-on: ubuntu-24.04
-    needs:
-      - workflow-requirements
     strategy:
       matrix:
         branch: [master, foo]
