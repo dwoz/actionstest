@@ -16,7 +16,7 @@ jobs:
       - workflow-requirements
     strategy:
       matrix:
-        - branch: [master, foo]
+        branch: [master, foo]
     steps:
       - name: Trigger ${{ matrix.branch }} branch
         env:
