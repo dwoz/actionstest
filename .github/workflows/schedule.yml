@@ -1,7 +1,7 @@
 name: Schedule
 on:
   schedule:
-    - cron: '5 * * * *"
+    - cron: '5 * * * *'
 
 permissions:
   contents: read  # for dorny/paths-filter to fetch a list of changed files
