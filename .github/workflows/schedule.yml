@@ -14,8 +14,9 @@ jobs:
     runs-on: ubuntu-24.04
     needs:
       - workflow-requirements
-    matrix:
-      - branch: [master]
+    strategy:
+      matrix:
+        - branch: [master]
     steps:
       - name: Trigger ${{ matrix.branch }} branch
         env:
