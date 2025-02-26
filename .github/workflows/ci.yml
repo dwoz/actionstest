@@ -1,16 +1,7 @@
 name: CI
 on:
   push: {}
-  workflow_dispatch:
-    inputs:
-       offer:
-         type: string
-         required: True
-       public_key:
-         type: string
-         required: True
-
-
+  workflow_dispatch: {}
 
 
 jobs:
