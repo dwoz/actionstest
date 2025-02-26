@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        branch: [master, foo]
+        branch: [main, foo]
     steps:
       - name: Trigger ${{ matrix.branch }} branch
         env:
