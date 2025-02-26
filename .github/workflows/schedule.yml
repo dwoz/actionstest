@@ -1,0 +1,24 @@
+
+on:
+  schedule:
+    - 5 * * * *
+
+permissions:
+  contents: read  # for dorny/paths-filter to fetch a list of changed files
+  pull-requests: read  # for dorny/paths-filter to read pull requests
+  actions: write  # to trigger branch nightly builds
+
+jobs:
+  trigger-branch-nightly-builds:
+    name: Trigger Branch Workflows
+    runs-on: ubuntu-24.04
+    needs:
+      - workflow-requirements
+    matrix:
+      - branch: [master]
+    steps:
+      - name: Trigger ${{ matrix.branch }} branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run ci.yml --repo ${{ github.repository }} --ref ${{ matrix.branch }}
