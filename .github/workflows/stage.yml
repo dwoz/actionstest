@@ -1,0 +1,34 @@
+---
+name: Draft Github Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        required: true
+        description: Version
+    
+
+jobs:
+
+  create-github-release:
+    name: Draft Release v${{ inputs.salt-version }}
+    runs-on: ubuntu-22.04
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_name: "Release v${{ inputs.version }}"
+          tag_name: v${{ inputs.version }}
+          draft: true
+          prerelease: false
+
+      - name: Release Output
+        run: echo "upload_url=${{ steps.create_release.outputs.upload_url }}" >> "$GITHUB_OUTPUT"
