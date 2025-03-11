@@ -1,5 +1,5 @@
 name: Release
-run-name: "Release (branch: ${{ github.ref_name }}; version: ${{ inputs.salt-version }})"
+run-name: "Release (branch: ${{ github.ref_name }}; version: ${{ inputs.version }})"
 
 on:
   workflow_dispatch:
@@ -28,7 +28,7 @@ jobs:
           echo 123 > meh
           git add meh
           git commit -m meh
-          git tag -m "Release ${{ inputs.version }} -as v${{ inputs.version }}
+          git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
 
       - name: Push Changes
         uses: ad-m/github-push-action@b87afee92c6e70ea888be6203a3e9426fda49839
