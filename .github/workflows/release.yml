@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write  # To be able to publish the release
+  pull-requests: write
 
 jobs:
 
