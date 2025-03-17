@@ -53,6 +53,7 @@ jobs:
           EOF
           chmod +x "${GNUPGHOME}/gpg.sh"
           git config --global gpg.program "${GNUPGHOME}/gpg.sh"
+          gpgconf --kill gpg-agent
 
       - run: |
           cat "${GNUPGHOME}/gpg.conf"
