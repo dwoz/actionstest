@@ -48,7 +48,7 @@ jobs:
       - run: |
           echo 123 > meh
           git add meh
-          git commit -m meh
+          git commit -as -m meh
           git tag -m "Release ${{ inputs.version }}" -a v${{ inputs.version }}
 
       - name: Push Changes
