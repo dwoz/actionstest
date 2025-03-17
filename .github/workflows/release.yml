@@ -68,8 +68,6 @@ jobs:
       - name: Push Changes
         uses: ad-m/github-push-action@77c5b412c50b723d2a4fbc6d71fb5723bcd439aa
         with:
-          tags: true
-          atomic: true
           push_only_tags: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
