@@ -16,7 +16,9 @@ jobs:
 
   release:
     runs-on: ubuntu-24.04
-    permissions:                # Job-level permissions configuration starts here contents: write           # 'write' access to repository contents pull-requests: write
+    permissions:                # Job-level permissions configuration starts here
+      contents: write           # 'write' access to repository contents
+      pull-requests: write
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
