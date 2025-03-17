@@ -41,6 +41,7 @@ jobs:
           echo "GNUPGHOME=${GNUPGHOME}" >> "$GITHUB_ENV"
           cat <<EOF > "${GNUPGHOME}/gpg.conf"
           batch
+          no-tty
           pinentry-mode loopback
           passphrase-file ${GNUPGHOME}/passphrase
           EOF
@@ -51,17 +52,17 @@ jobs:
           gpg -v --batch --pinentry-mode=loopback --passphrase=${SIGNING_PASSPHRASE} \$@
           EOF
           chmod +x "${GNUPGHOME}/gpg.sh"
-          git config --global gpg.program "${GNUPGHOME}/gpg.sh"
+          #git config --global gpg.program "${GNUPGHOME}/gpg.sh"
           gpgconf --kill gpg-agent
 
       - run: |
           cat "${GNUPGHOME}/gpg.conf"
           git config --global -l
           export GPG_TTY=$(tty)
-          #echo meh | gpg --status-fd=2 -v -bsau 64CBBC8173D76B3F
-          echo 123 > meh
-          git add meh
-          GIT_TRACE=1 git commit -m meh
+          echo meh | gpg --status-fd=2 -v -bsau 64CBBC8173D76B3F
+          #echo 123 > meh
+          #git add meh
+          #GIT_TRACE=1 git commit -m meh
           #git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
 
       - name: Push Changes
