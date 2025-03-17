@@ -75,7 +75,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          export RELEASE_ID=$(gh release view v13 --json id|jq .id)
+          export RELEASE_ID=$(gh release view v13 --json id|jq -r .id)
           echo $RELEASE_ID
           echo "RELEASE_ID=$RELEASE_ID" >> "$GITHUB_ENV"
 
