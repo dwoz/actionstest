@@ -56,8 +56,8 @@ jobs:
           cat "${GNUPGHOME}/gpg.conf"
           echo 123 > meh
           git add meh
-          git commit -as -m meh
-          git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
+          git commit -m meh
+          #git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
 
       - name: Push Changes
         uses: ad-m/github-push-action@b87afee92c6e70ea888be6203a3e9426fda49839
