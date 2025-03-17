@@ -58,9 +58,9 @@ jobs:
           cat "${GNUPGHOME}/gpg.conf"
           git config --global -l
           echo meh | gpg --status-fd=2 -bsau 64CBBC8173D76B3F
-          echo 123 > meh
-          git add meh
-          GIT_TRACE=1 git commit -m meh
+          #echo 123 > meh
+          #git add meh
+          #GIT_TRACE=1 git commit -m meh
           #git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
 
       - name: Push Changes
