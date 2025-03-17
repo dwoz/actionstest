@@ -20,6 +20,22 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
+      - name: Setup GnuPG
+        run: |
+          sudo install -d -m 0700 -o "$(id -u)" -g "$(id -g)" /run/gpg
+          GNUPGHOME="$(mktemp -d -p /run/gpg)"
+          echo "GNUPGHOME=${GNUPGHOME}" >> "$GITHUB_ENV"
+          cat <<EOF > "${GNUPGHOME}/gpg.conf"
+          batch
+          no-tty
+          pinentry-mode loopback
+          EOF
+          echo "${SIGNING_GPG_PASSPHRASE}" > "${GNUPGHOME}/passphrase" 
+          echo "passphrase-file ${GNUPGHOME}/passphrase" >> "${GNUPGHOME}/gpg.conf"
+          echo "${SIGNING_GPG_KEY}" | gpg --import -
+          sync
+
+
       - run: |
           git config --global --add safe.directory "$(pwd)"
           git config --global user.name "Salt Project Packaging"
