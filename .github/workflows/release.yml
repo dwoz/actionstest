@@ -41,7 +41,6 @@ jobs:
           echo "GNUPGHOME=${GNUPGHOME}" >> "$GITHUB_ENV"
           cat <<EOF > "${GNUPGHOME}/gpg.conf"
           batch
-          no-tty
           pinentry-mode loopback
           passphrase-file ${GNUPGHOME}/passphrase
           EOF
