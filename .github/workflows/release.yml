@@ -72,7 +72,7 @@ jobs:
       #    github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get release
-        echo RELEASE_ID=$(gh release view v13 --json id|jq .id) >> "$GITHUB_ENV"
+        run: echo RELEASE_ID=$(gh release view v13 --json id|jq .id) >> "$GITHUB_ENV"
 
       - uses: eregon/publish-release@v1
         env:
