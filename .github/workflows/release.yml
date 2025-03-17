@@ -56,20 +56,20 @@ jobs:
           ##git config --global gpg.program "${GNUPGHOME}/gpg.sh"
           #gpgconf --kill gpg-agent
 
-      - run: |
-          cat "${GNUPGHOME}/gpg.conf"
-          git config --global -l
-          export GPG_TTY=$(tty)
-          echo 123 > meh
-          git add meh
-          GIT_TRACE=1 git commit -m meh
-          git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
+      #- run: |
+      #    cat "${GNUPGHOME}/gpg.conf"
+      #    git config --global -l
+      #    export GPG_TTY=$(tty)
+      #    echo 123 > meh
+      #    git add meh
+      #    GIT_TRACE=1 git commit -m meh
+      #    git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
 
-      - name: Push Changes
-        uses: ad-m/github-push-action@77c5b412c50b723d2a4fbc6d71fb5723bcd439aa
-        with:
-          push_only_tags: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      #- name: Push Changes
+      #  uses: ad-m/github-push-action@77c5b412c50b723d2a4fbc6d71fb5723bcd439aa
+      #  with:
+      #    push_only_tags: true
+      #    github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get release
         id: get_release
