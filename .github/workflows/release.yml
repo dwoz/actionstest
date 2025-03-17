@@ -47,13 +47,14 @@ jobs:
           EOF
           echo "${SIGNING_PASSPHRASE}" > "${GNUPGHOME}/passphrase"
           echo "${SIGNING_GPG_KEY}" | gpg --import -
-          cat <<EOF > "${GNUPGHOME}/gpg.sh"
-          #!/bin/bash
-          gpg -v --batch --pinentry-mode=loopback --passphrase=${SIGNING_PASSPHRASE} \$@
-          EOF
-          chmod +x "${GNUPGHOME}/gpg.sh"
-          #git config --global gpg.program "${GNUPGHOME}/gpg.sh"
-          gpgconf --kill gpg-agent
+          echo meh | gpg --status-fd=2 -v -bsau 64CBBC8173D76B3F
+          #cat <<EOF > "${GNUPGHOME}/gpg.sh"
+          ##!/bin/bash
+          #gpg -v --batch --pinentry-mode=loopback --passphrase=${SIGNING_PASSPHRASE} \$@
+          #EOF
+          #chmod +x "${GNUPGHOME}/gpg.sh"
+          ##git config --global gpg.program "${GNUPGHOME}/gpg.sh"
+          #gpgconf --kill gpg-agent
 
       - run: |
           cat "${GNUPGHOME}/gpg.conf"
