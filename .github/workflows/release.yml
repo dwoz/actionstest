@@ -72,13 +72,10 @@ jobs:
       #    github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get release
-        id: get_release
-        uses: agners/get-draft-release@v1.1.0
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        echo RELEASE_ID=$(gh release view v13 --json id|jq .id) >> "$GITHUB_ENV"
 
       - uses: eregon/publish-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          release_id: ${{ steps.get_release.outputs.id }}
+          release_id: ${{ env.RELEASE_ID }}
