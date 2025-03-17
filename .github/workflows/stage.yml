@@ -34,6 +34,7 @@ jobs:
           openssl rand -hex 12 > meh
           git add meh
           git commit -m "Release v${{ inputs.version }}"
+          echo REFSHA=$(git rev-parse HEAD) >> "$GITHUB_ENV"
 
       - name: Create Release
         id: create_release
@@ -45,6 +46,7 @@ jobs:
           tag_name: v${{ inputs.version }}
           draft: true
           prerelease: false
+          commitish: ${{ env.REFSHA }}
 
       - name: Release Output
         run: echo "upload_url=${{ steps.create_release.outputs.upload_url }}" >> "$GITHUB_OUTPUT"
