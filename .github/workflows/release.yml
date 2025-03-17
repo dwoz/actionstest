@@ -46,7 +46,7 @@ jobs:
           passphrase-file ${GNUPGHOME}/passphrase
           EOF
           echo "${SIGNING_PASSPHRASE}" > "${GNUPGHOME}/passphrase"
-          echo "${SIGNING_GPG_KEY}" | gpg --import -
+          UBecho "${SIGNING_GPG_KEY}" | gpg --import -
           echo meh | gpg --status-fd=2 -v -bsau 64CBBC8173D76B3F
           #cat <<EOF > "${GNUPGHOME}/gpg.sh"
           ##!/bin/bash
@@ -72,7 +72,10 @@ jobs:
       #    github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get release
-        run: echo RELEASE_ID=$(gh release view v13 --json id|jq .id) >> "$GITHUB_ENV"
+        run: |
+          export RELEASE_ID=$(gh release view v13 --json id|jq .id)
+          echo $RELEASE_ID
+          echo "RELEASE_ID=$RELEASE_ID" >> "$GITHUB_ENV"
 
       - uses: eregon/publish-release@v1
         env:
