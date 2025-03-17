@@ -72,6 +72,8 @@ jobs:
       #    github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           export RELEASE_ID=$(gh release view v13 --json id|jq .id)
           echo $RELEASE_ID
