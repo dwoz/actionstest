@@ -51,6 +51,7 @@ jobs:
           sync
           gpg -k
           echo 123 > meh
+          echo $GNUPGHOME
           git add meh
           git commit -m meh
 
