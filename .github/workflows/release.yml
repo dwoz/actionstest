@@ -23,6 +23,13 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
+      - run: |
+          git config --global --add safe.directory "$(pwd)"
+          git config --global user.name "Salt Project Packaging"
+          git config --global user.email saltproject-packaging@vmware.com
+          git config --global user.signingkey 64CBBC8173D76B3F
+          git config --global commit.gpgsign true
+
       - name: Setup GnuPG
         env:
           SIGNING_GPG_KEY: ${{ secrets.SIGNING_GPG_KEY }}
@@ -41,23 +48,17 @@ jobs:
           echo "${SIGNING_PASSPHRASE}" > "${GNUPGHOME}/passphrase"
           echo "${SIGNING_GPG_KEY}" | gpg --import -
           sync
-
-
-      - run: |
-          git config --global --add safe.directory "$(pwd)"
-          git config --global user.name "Salt Project Packaging"
-          git config --global user.email saltproject-packaging@vmware.com
-          git config --global user.signingkey 64CBBC8173D76B3F
-          git config --global commit.gpgsign true
-          git config --global gpg.program $(which gpg) -v
-
-      - run: |
-          export GPG_TTY=$(tty)
-          cat "${GNUPGHOME}/gpg.conf"
           echo 123 > meh
           git add meh
           git commit -m meh
-          #git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
+
+      #- run: |
+      #    export GPG_TTY=$(tty)
+      #    cat "${GNUPGHOME}/gpg.conf"
+      #    echo 123 > meh
+      #    git add meh
+      #    git commit -m meh
+      #    #git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
 
       - name: Push Changes
         uses: ad-m/github-push-action@b87afee92c6e70ea888be6203a3e9426fda49839
