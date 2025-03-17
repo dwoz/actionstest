@@ -49,7 +49,7 @@ jobs:
           echo "${SIGNING_GPG_KEY}" | gpg --import -
           cat <<EOF > "${GNUPGHOME}/gpg.sh"
           #!/bin/bash
-          gpg --passphrase=${GNUPGHOME}/passphrase $@
+          gpg -v --pinentry-mode=loopback --passphrase=${GNUPGHOME}/passphrase $@
           EOF
           chmod +x "${GNUPGHOME}/gpg.sh"
           git config --global gpg.program "${GNUPGHOME}/gpg.sh"
