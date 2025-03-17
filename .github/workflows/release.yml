@@ -71,16 +71,8 @@ jobs:
       #    push_only_tags: true
       #    github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get release
+      - name: Publish Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          export RELEASE_ID=$(gh release view v13 --json id|jq -r .id)
-          echo $RELEASE_ID
-          echo "RELEASE_ID=$RELEASE_ID" >> "$GITHUB_ENV"
-
-      - uses: eregon/publish-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_id: ${{ env.RELEASE_ID }}
+          gh release edit v${{ inputs.version }}  --draft=false
