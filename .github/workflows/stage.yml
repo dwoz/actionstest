@@ -24,6 +24,11 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
+      - run: |
+          git config --global --add safe.directory "$(pwd)"
+          git config --global user.name "Salt Project Packaging"
+          git config --global user.email saltproject-packaging@vmware.com
+
       - name: Change code
         run: |
           openssl rand -hex 12 > meh
