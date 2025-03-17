@@ -29,7 +29,6 @@ jobs:
           git config --global user.email saltproject-packaging@vmware.com
           git config --global user.signingkey 64CBBC8173D76B3F
           git config --global commit.gpgsign true
-          git config --global gpg.program gpg -v --passphrase-file=${GNUPGHOME}/passphrase
 
       - name: Setup GnuPG
         env:
@@ -48,9 +47,11 @@ jobs:
           EOF
           echo "${SIGNING_PASSPHRASE}" > "${GNUPGHOME}/passphrase"
           echo "${SIGNING_GPG_KEY}" | gpg --import -
+          git config --global gpg.program gpg -v --passphrase-file="${GNUPGHOME}/passphrase"
 
       - run: |
           cat "${GNUPGHOME}/gpg.conf"
+          git config --global -l
           echo 123 > meh
           git add meh
           git commit -m meh
