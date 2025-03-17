@@ -32,8 +32,13 @@ jobs:
           sudo install -d -m 0700 -o "$(id -u)" -g "$(id -g)" /run/gpg
           export GNUPGHOME="$(mktemp -d -p /run/gpg)"
           echo "GNUPGHOME=${GNUPGHOME}" >> "$GITHUB_ENV"
+          cat <<EOF > "${GNUPGHOME}/gpg.conf"
+          batch
+          no-tty
+          pinentry-mode loopback
+          passphrase-file ${GNUPGHOME}/passphrase
+          EOF
           echo "${SIGNING_PASSPHRASE}" > "${GNUPGHOME}/passphrase"
-          echo "passphrase-file ${GNUPGHOME}/passphrase" >> "${GNUPGHOME}/gpg.conf"
           echo "${SIGNING_GPG_KEY}" | gpg --import -
           sync
 
