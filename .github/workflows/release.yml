@@ -51,6 +51,7 @@ jobs:
           git config --global commit.gpgsign true
 
       - run: |
+          export GPG_TTY=$(tty)
           cat "${GNUPGHOME}/gpg.conf"
           echo 123 > meh
           git add meh
