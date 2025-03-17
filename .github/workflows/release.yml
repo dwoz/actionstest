@@ -49,7 +49,7 @@ jobs:
           git config --global user.email saltproject-packaging@vmware.com
           git config --global user.signingkey 64CBBC8173D76B3F
           git config --global commit.gpgsign true
-          git config --global gpg.program $(which gpg) -v
+          git config --global gpg.program $(which gpg) --passphrase-file="${GNUPGHOME}/passphrase"
 
       - run: |
           export GPG_TTY=$(tty)
