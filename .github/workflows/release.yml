@@ -71,7 +71,6 @@ jobs:
           tags: true
           atomic: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
 
       - name: Get release
         id: get_release
