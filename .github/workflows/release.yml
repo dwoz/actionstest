@@ -36,7 +36,6 @@ jobs:
           SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
         run: |
           export GPG_TTY=$(tty)
-          gpg-connect-agent /bye
           sudo install -d -m 0700 -o "$(id -u)" -g "$(id -g)" /run/gpg
           export GNUPGHOME="$(mktemp -d -p /run/gpg)"
           echo "GNUPGHOME=${GNUPGHOME}" >> "$GITHUB_ENV"
@@ -50,18 +49,13 @@ jobs:
           echo "${SIGNING_GPG_KEY}" | gpg --import -
           sync
           gpg -k
+
+      - run: |
+          cat "${GNUPGHOME}/gpg.conf"
           echo 123 > meh
-          echo $GNUPGHOME
           git add meh
           git commit -m meh
-
-      #- run: |
-      #    export GPG_TTY=$(tty)
-      #    cat "${GNUPGHOME}/gpg.conf"
-      #    echo 123 > meh
-      #    git add meh
-      #    git commit -m meh
-      #    #git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
+          #git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
 
       - name: Push Changes
         uses: ad-m/github-push-action@b87afee92c6e70ea888be6203a3e9426fda49839
