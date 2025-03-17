@@ -21,9 +21,12 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
 
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
       - name: Change code
         run: |
-          tr -dc A-Za-z0-9 </dev/urandom | head -c 13 > meh
+          openssl rand -hex 12 > meh
           git add meh
           git commit -m release v${{ inputs.version }}
 
