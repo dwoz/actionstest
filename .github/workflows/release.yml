@@ -51,6 +51,7 @@ jobs:
           #!/bin/bash
           gpg --passphrase=${GNUPGHOME}/passphrase $@
           EOF
+          chmod +x "${GNUPGHOME}/gpg.sh"
           git config --global gpg.program "${GNUPGHOME}/gpg.sh"
 
       - run: |
