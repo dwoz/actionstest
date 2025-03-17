@@ -66,7 +66,7 @@ jobs:
           git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
 
       - name: Push Changes
-        uses: ad-m/github-push-action@v0.8.0
+        uses: ad-m/github-push-action@77c5b41
         with:
           tags: true
           atomic: true
