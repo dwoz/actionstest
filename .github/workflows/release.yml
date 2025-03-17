@@ -16,6 +16,9 @@ jobs:
 
   release:
     runs-on: ubuntu-24.04
+    permissions:                # Job-level permissions configuration starts here
+      contents: write           # 'write' access to repository contents
+      pull-requests: write
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
@@ -49,7 +52,7 @@ jobs:
           echo 123 > meh
           git add meh
           git commit -as -m meh
-          git tag -m "Release ${{ inputs.version }}" -a v${{ inputs.version }}
+          git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
 
       - name: Push Changes
         uses: ad-m/github-push-action@b87afee92c6e70ea888be6203a3e9426fda49839
@@ -57,6 +60,7 @@ jobs:
           ssh: true
           tags: true
           atomic: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
 
       - name: Get release
