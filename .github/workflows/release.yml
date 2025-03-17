@@ -30,46 +30,36 @@ jobs:
           git config --global user.signingkey 64CBBC8173D76B3F
           git config --global commit.gpgsign true
 
-      #- name: Setup GnuPG
-      #  env:
-      #    SIGNING_GPG_KEY: ${{ secrets.SIGNING_GPG_KEY }}
-      #    SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHASE }}
-      #  run: |
-      #    export GPG_TTY=$(tty)
-      #    sudo install -d -m 0700 -o "$(id -u)" -g "$(id -g)" /run/gpg
-      #    export GNUPGHOME="$(mktemp -d -p /run/gpg)"
-      #    echo "GNUPGHOME=${GNUPGHOME}" >> "$GITHUB_ENV"
-      #    cat <<EOF > "${GNUPGHOME}/gpg.conf"
-      #    batch
-      #    no-tty
-      #    pinentry-mode loopback
-      #    passphrase-file ${GNUPGHOME}/passphrase
-      #    EOF
-      #    echo "${SIGNING_PASSPHRASE}" > "${GNUPGHOME}/passphrase"
-      #    UBecho "${SIGNING_GPG_KEY}" | gpg --import -
-      #    echo meh | gpg --status-fd=2 -v -bsau 64CBBC8173D76B3F
-      #    #cat <<EOF > "${GNUPGHOME}/gpg.sh"
-      #    ##!/bin/bash
-      #    #gpg -v --batch --pinentry-mode=loopback --passphrase=${SIGNING_PASSPHRASE} \$@
-      #    #EOF
-      #    #chmod +x "${GNUPGHOME}/gpg.sh"
-      #    ##git config --global gpg.program "${GNUPGHOME}/gpg.sh"
-      #    #gpgconf --kill gpg-agent
+      - name: Setup GnuPG
+        env:
+          SIGNING_GPG_KEY: ${{ secrets.SIGNING_GPG_KEY }}
+          SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHASE }}
+        run: |
+          export GPG_TTY=$(tty)
+          sudo install -d -m 0700 -o "$(id -u)" -g "$(id -g)" /run/gpg
+          export GNUPGHOME="$(mktemp -d -p /run/gpg)"
+          echo "GNUPGHOME=${GNUPGHOME}" >> "$GITHUB_ENV"
+          cat <<EOF > "${GNUPGHOME}/gpg.conf"
+          batch
+          no-tty
+          pinentry-mode loopback
+          passphrase-file ${GNUPGHOME}/passphrase
+          EOF
+          echo "${SIGNING_PASSPHRASE}" > "${GNUPGHOME}/passphrase"
+          echo "${SIGNING_GPG_KEY}" | gpg --import -
 
-      #- run: |
-      #    cat "${GNUPGHOME}/gpg.conf"
-      #    git config --global -l
-      #    export GPG_TTY=$(tty)
-      #    echo 123 > meh
-      #    git add meh
-      #    GIT_TRACE=1 git commit -m meh
-      #    git tag -m "Release ${{ inputs.version }}" -as v${{ inputs.version }}
+      - name: Commit release changes
+        run: |
+          openssl rand -hex 12 > meh
+          git add meh
+          git commit -m "Release v${{ inputs.version }}"
 
-      #- name: Push Changes
-      #  uses: ad-m/github-push-action@77c5b412c50b723d2a4fbc6d71fb5723bcd439aa
-      #  with:
-      #    push_only_tags: true
-      #    github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push tag
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git tag v${{ inputs.version }}
+          git push origin v${{ inputs.version }}
 
       - name: Publish Release
         env:
