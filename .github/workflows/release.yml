@@ -47,7 +47,7 @@ jobs:
           EOF
           echo "${SIGNING_PASSPHRASE}" > "${GNUPGHOME}/passphrase"
           echo "${SIGNING_GPG_KEY}" | gpg --import -
-          git config --global gpg.program gpg -v --passphrase-file="${GNUPGHOME}/passphrase"
+          git config --global --add gpg.program gpg -v --passphrase-file="${GNUPGHOME}/passphrase"
 
       - run: |
           cat "${GNUPGHOME}/gpg.conf"
