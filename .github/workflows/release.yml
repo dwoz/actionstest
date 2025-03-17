@@ -51,6 +51,7 @@ jobs:
           git config --global commit.gpgsign true
 
       - run: |
+          cat "${GNUPGHOME}/gpg.conf"
           echo 123 > meh
           git add meh
           git commit -as -m meh
