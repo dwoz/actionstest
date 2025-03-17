@@ -28,7 +28,7 @@ jobs:
         run: |
           openssl rand -hex 12 > meh
           git add meh
-          git commit -m release v${{ inputs.version }}
+          git commit -m "Release v${{ inputs.version }}"
 
       - name: Create Release
         id: create_release
