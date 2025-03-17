@@ -21,6 +21,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup GnuPG
+        env:
+          SIGNING_GPG_KEY: ${{ secrets.SIGNING_GPG_KEY }}
+          SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
         run: |
           sudo install -d -m 0700 -o "$(id -u)" -g "$(id -g)" /run/gpg
           GNUPGHOME="$(mktemp -d -p /run/gpg)"
@@ -30,7 +33,7 @@ jobs:
           no-tty
           pinentry-mode loopback
           EOF
-          echo "${SIGNING_GPG_PASSPHRASE}" > "${GNUPGHOME}/passphrase" 
+          echo "${SIGNING_PASSPHRASE}" > "${GNUPGHOME}/passphrase"
           echo "passphrase-file ${GNUPGHOME}/passphrase" >> "${GNUPGHOME}/gpg.conf"
           echo "${SIGNING_GPG_KEY}" | gpg --import -
           sync
